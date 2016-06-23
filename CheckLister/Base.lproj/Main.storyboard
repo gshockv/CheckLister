@@ -35,6 +35,9 @@
                                         </label>
                                     </subviews>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="eR6-dy-hJQ" kind="presentation" identifier="EditItemSegue" trigger="accessoryAction" id="5KL-dS-SIg"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -151,4 +154,7 @@
             <point key="canvasLocation" x="1185.5" y="-45.5"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="5KL-dS-SIg"/>
+    </inferredMetricsTieBreakers>
 </document>

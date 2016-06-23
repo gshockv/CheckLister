@@ -48,12 +48,22 @@ class ChecklistViewController: UITableViewController, AddItemViewControllerDeleg
     }
         
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == "AddItemSegue" {
-            let navigationController = segue.destinationViewController as! UINavigationController
-            let viewController = navigationController.topViewController as! AddItemViewController
-            viewController.delegate = self
+        var navController: UINavigationController?
+        var destController: AddItemViewController?
+        
+        if segue.identifier == "AddItemSegue" || segue.identifier == "EditItemSegue" {
+            navController = segue.destinationViewController as? UINavigationController
+            destController = navController?.topViewController as? AddItemViewController
+            destController?.delegate = self
+        }
+        if (segue.identifier == "EditItemSegue") {
+            // put ChecklistItem to destination controller
+            if let indexPath = tableView.indexPathForCell(sender as! UITableViewCell) {
+                destController?.itemToEdit = items[indexPath.row]
+            }
         }
     }
+    
     
     // ==================================================================================================================
     // add item view controller delegate methods
@@ -69,6 +79,16 @@ class ChecklistViewController: UITableViewController, AddItemViewControllerDeleg
         let indexPaths = [NSIndexPath(forRow: newRowIndex, inSection: 0)]
         tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .Automatic)
         
+        dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func addItemViewController(controller: AddItemViewController, didFinishEditingItem item: ChecklistItem) {
+        if let index = items.indexOf(item) {
+            let indexPath = NSIndexPath(forRow: index, inSection: 0)
+            if let cell = tableView.cellForRowAtIndexPath(indexPath) {
+                configureTextForCell(cell, withChecklistItem: item)
+            }
+        }
         dismissViewControllerAnimated(true, completion: nil)
     }
     

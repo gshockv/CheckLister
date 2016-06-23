@@ -7,6 +7,11 @@
 //
 
 protocol AddItemViewControllerDelegate: class {
-    func addItemViewControllerDelegateDidCancel(controller: AddItemViewController)
+    
     func addItemViewController(controller: AddItemViewController, didFinishAddingItem item: ChecklistItem)
+    
+    func addItemViewController(controller: AddItemViewController, didFinishEditingItem item: ChecklistItem)
+    
+    func addItemViewControllerDelegateDidCancel(controller: AddItemViewController)
+    
 }
