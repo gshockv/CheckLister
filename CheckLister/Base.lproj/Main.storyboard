@@ -60,7 +60,7 @@
         <!--Add Item-->
         <scene sceneID="67g-Dy-utf">
             <objects>
-                <tableViewController id="5zb-Ir-RMQ" customClass="AddItemViewController" customModule="CheckLister" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="5zb-Ir-RMQ" customClass="ItemDetailViewController" customModule="CheckLister" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="u6S-MT-7lY">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

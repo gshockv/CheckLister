@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ChecklistViewController: UITableViewController, AddItemViewControllerDelegate {
+class ChecklistViewController: UITableViewController, ItemDetailViewControllerDelegate {
 
     var items: [ChecklistItem]
     
@@ -49,11 +49,11 @@ class ChecklistViewController: UITableViewController, AddItemViewControllerDeleg
         
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         var navController: UINavigationController?
-        var destController: AddItemViewController?
+        var destController: ItemDetailViewController?
         
         if segue.identifier == "AddItemSegue" || segue.identifier == "EditItemSegue" {
             navController = segue.destinationViewController as? UINavigationController
-            destController = navController?.topViewController as? AddItemViewController
+            destController = navController?.topViewController as? ItemDetailViewController
             destController?.delegate = self
         }
         if (segue.identifier == "EditItemSegue") {
@@ -69,11 +69,11 @@ class ChecklistViewController: UITableViewController, AddItemViewControllerDeleg
     // add item view controller delegate methods
     // ==================================================================================================================
     
-    func addItemViewControllerDelegateDidCancel(controller: AddItemViewController) {
+    func itemDetailViewControllerDidCancel(controller: ItemDetailViewController) {
         dismissViewControllerAnimated(true, completion: nil)
     }
     
-    func addItemViewController(controller: AddItemViewController, didFinishAddingItem item: ChecklistItem) {
+    func itemDetailViewController(controller: ItemDetailViewController, didFinishAddingItem item: ChecklistItem) {
         let newRowIndex = items.count
         items.append(item)
         let indexPaths = [NSIndexPath(forRow: newRowIndex, inSection: 0)]
@@ -82,7 +82,7 @@ class ChecklistViewController: UITableViewController, AddItemViewControllerDeleg
         dismissViewControllerAnimated(true, completion: nil)
     }
     
-    func addItemViewController(controller: AddItemViewController, didFinishEditingItem item: ChecklistItem) {
+    func itemDetailViewController(controller: ItemDetailViewController, didFinishEditingItem item: ChecklistItem) {
         if let index = items.indexOf(item) {
             let indexPath = NSIndexPath(forRow: index, inSection: 0)
             if let cell = tableView.cellForRowAtIndexPath(indexPath) {
