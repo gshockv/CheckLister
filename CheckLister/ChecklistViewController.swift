@@ -10,6 +10,7 @@ import UIKit
 
 class ChecklistViewController: UITableViewController, ItemDetailViewControllerDelegate {
 
+    var checklist: Checklist!
     var items: [ChecklistItem]
     
     required init?(coder aDecoder: NSCoder) {
@@ -20,6 +21,7 @@ class ChecklistViewController: UITableViewController, ItemDetailViewControllerDe
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        title = checklist.name
     }
         
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
@@ -59,9 +61,7 @@ class ChecklistViewController: UITableViewController, ItemDetailViewControllerDe
     }
     
     
-    // ==================================================================================================================
-    // item details view controller delegate methods
-    // ==================================================================================================================
+    // MARK: - Item details view controller delegate methods
     
     func itemDetailViewControllerDidCancel(controller: ItemDetailViewController) {
         dismissViewControllerAnimated(true, completion: nil)
@@ -90,10 +90,7 @@ class ChecklistViewController: UITableViewController, ItemDetailViewControllerDe
         saveChecklistItems()
     }
     
-    
-    // ==================================================================================================================
-    // table view delegate methods
-    // ==================================================================================================================
+    // MARK: - Table view delegate methods
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return items.count
@@ -153,9 +150,5 @@ class ChecklistViewController: UITableViewController, ItemDetailViewControllerDe
     
     func dataFilePath() -> String {
         return "\(documentsDirectory())/Checklists.plist"
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
     }
 }
