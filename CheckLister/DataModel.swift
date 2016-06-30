@@ -13,7 +13,23 @@ class DataModel {
     
     init() {
         loadChecklists()
+        registerDefaults()
+        handleFirstTime()
     }
+    
+    // MARK: - Properties
+    
+    var indexOfSelectedChecklist: Int {
+        get {
+            return NSUserDefaults.standardUserDefaults().integerForKey("ChecklistIndex")
+        }
+        
+        set {
+            NSUserDefaults.standardUserDefaults().setInteger(newValue, forKey: "ChecklistIndex")
+        }
+    }
+    
+    // MARK: - Items related methods
     
     func loadChecklists() {
         let path = dataFilePath()
@@ -34,6 +50,8 @@ class DataModel {
         data.writeToFile(dataFilePath(), atomically: true)
     }
     
+    // MARK: - Utils
+    
     func documentsDirectory() -> String {
         let paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
         return paths[0]
@@ -41,5 +59,26 @@ class DataModel {
     
     func dataFilePath() -> String {
         return (documentsDirectory() as NSString).stringByAppendingPathComponent("Checklists.plist")
+    }
+    
+    // MARK: - Handle User defaults
+    
+    func handleFirstTime() {
+        let userDefaults = NSUserDefaults.standardUserDefaults()
+        let firstTime = userDefaults.boolForKey("FirstTime")
+        if firstTime {
+            let firstTimeChecklist = Checklist(name: "Default Checklist")
+            lists.append(firstTimeChecklist)
+            indexOfSelectedChecklist = 0
+            userDefaults.setBool(false, forKey: "FirstTime")
+            userDefaults.synchronize()
+            
+        }
+    }
+    
+    func registerDefaults() {
+        let dict = [ "ChecklistIndex" : -1,
+                     "FirstTime" : true ]
+        NSUserDefaults.standardUserDefaults().registerDefaults(dict)
     }
 }
