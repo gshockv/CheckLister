@@ -26,6 +26,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
+    func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
+        print("didReceiveLocalNotification \(notification)")
+    }
+    
     func applicationDidEnterBackground(application: UIApplication) {
         saveData()
     }
