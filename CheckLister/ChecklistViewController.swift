@@ -17,18 +17,18 @@ class ChecklistViewController: UITableViewController, ItemDetailViewControllerDe
         title = checklist.name
     }
         
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         var navController: UINavigationController?
         var destController: ItemDetailViewController?
         
         if segue.identifier == "AddItemSegue" || segue.identifier == "EditItemSegue" {
-            navController = segue.destinationViewController as? UINavigationController
+            navController = segue.destination as? UINavigationController
             destController = navController?.topViewController as? ItemDetailViewController
             destController?.delegate = self
         }
         if (segue.identifier == "EditItemSegue") {
             // put ChecklistItem to destination controller
-            if let indexPath = tableView.indexPathForCell(sender as! UITableViewCell) {
+            if let indexPath = tableView.indexPath(for: sender as! UITableViewCell) {
                 destController?.itemToEdit = checklist.items[indexPath.row]
             }
         }
@@ -37,39 +37,39 @@ class ChecklistViewController: UITableViewController, ItemDetailViewControllerDe
     
     // MARK: - Item details view controller delegate methods
     
-    func itemDetailViewControllerDidCancel(controller: ItemDetailViewController) {
-        dismissViewControllerAnimated(true, completion: nil)
+    func itemDetailViewControllerDidCancel(_ controller: ItemDetailViewController) {
+        dismiss(animated: true, completion: nil)
     }
     
-    func itemDetailViewController(controller: ItemDetailViewController, didFinishAddingItem item: ChecklistItem) {
+    func itemDetailViewController(_ controller: ItemDetailViewController, didFinishAddingItem item: ChecklistItem) {
         let newRowIndex = checklist.items.count
         checklist.items.append(item)
-        let indexPaths = [NSIndexPath(forRow: newRowIndex, inSection: 0)]
-        tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .Automatic)
+        let indexPaths = [IndexPath(row: newRowIndex, section: 0)]
+        tableView.insertRows(at: indexPaths, with: .automatic)
         
-        dismissViewControllerAnimated(true, completion: nil)
+        dismiss(animated: true, completion: nil)
     }
     
-    func itemDetailViewController(controller: ItemDetailViewController, didFinishEditingItem item: ChecklistItem) {
-        if let index = checklist.items.indexOf(item) {
-            let indexPath = NSIndexPath(forRow: index, inSection: 0)
-            if let cell = tableView.cellForRowAtIndexPath(indexPath) {
+    func itemDetailViewController(_ controller: ItemDetailViewController, didFinishEditingItem item: ChecklistItem) {
+        if let index = checklist.items.index(of: item) {
+            let indexPath = IndexPath(row: index, section: 0)
+            if let cell = tableView.cellForRow(at: indexPath) {
                 configureTextForCell(cell, withChecklistItem: item)
             }
         }
-        dismissViewControllerAnimated(true, completion: nil)
+        dismiss(animated: true, completion: nil)
     }
     
     // MARK: - Table view delegate methods
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return checklist.items.count
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = checklist.items[indexPath.row]
         
-        let cell = tableView.dequeueReusableCellWithIdentifier("ChecklistItem", forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ChecklistItem", for: indexPath)
         
         configureTextForCell(cell, withChecklistItem: item)
         configureCheckmarkForCell(cell, withChecklistItem: item)
@@ -77,29 +77,29 @@ class ChecklistViewController: UITableViewController, ItemDetailViewControllerDe
         return cell
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if let cell = tableView.cellForRowAtIndexPath(indexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if let cell = tableView.cellForRow(at: indexPath) {
             let item = checklist.items[indexPath.row]
             item.toggleChecked()
             configureCheckmarkForCell(cell, withChecklistItem: item)
         }
         
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
-    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        checklist.items.removeAtIndex(indexPath.row)
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        checklist.items.remove(at: indexPath.row)
         
         let indexPaths = [indexPath]
-        tableView.deleteRowsAtIndexPaths(indexPaths, withRowAnimation: .Automatic)
+        tableView.deleteRows(at: indexPaths, with: .automatic)
     }
     
-    func configureTextForCell(cell: UITableViewCell, withChecklistItem item: ChecklistItem) {
+    func configureTextForCell(_ cell: UITableViewCell, withChecklistItem item: ChecklistItem) {
         let label = cell.viewWithTag(1000) as! UILabel
         label.text = item.text
     }
     
-    func configureCheckmarkForCell(cell: UITableViewCell, withChecklistItem item: ChecklistItem) {
+    func configureCheckmarkForCell(_ cell: UITableViewCell, withChecklistItem item: ChecklistItem) {
         let label = cell.viewWithTag(1001) as! UILabel
         
         if item.checked {

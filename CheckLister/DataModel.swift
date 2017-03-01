@@ -21,11 +21,11 @@ class DataModel {
     
     var indexOfSelectedChecklist: Int {
         get {
-            return NSUserDefaults.standardUserDefaults().integerForKey("ChecklistIndex")
+            return UserDefaults.standard.integer(forKey: "ChecklistIndex")
         }
         
         set {
-            NSUserDefaults.standardUserDefaults().setInteger(newValue, forKey: "ChecklistIndex")
+            UserDefaults.standard.set(newValue, forKey: "ChecklistIndex")
         }
     }
     
@@ -33,10 +33,10 @@ class DataModel {
     
     func loadChecklists() {
         let path = dataFilePath()
-        if NSFileManager.defaultManager().fileExistsAtPath(path) {
-            if let data = NSData(contentsOfFile: path) {
-                let unarchiver = NSKeyedUnarchiver(forReadingWithData: data)
-                lists = unarchiver.decodeObjectForKey("Checklists") as! [Checklist]
+        if FileManager.default.fileExists(atPath: path) {
+            if let data = try? Data(contentsOf: URL(fileURLWithPath: path)) {
+                let unarchiver = NSKeyedUnarchiver(forReadingWith: data)
+                lists = unarchiver.decodeObject(forKey: "Checklists") as! [Checklist]
                 unarchiver.finishDecoding()
                 
                 sortChecklists()
@@ -46,20 +46,20 @@ class DataModel {
     
     func saveChecklists() {
         let data = NSMutableData()
-        let archiver = NSKeyedArchiver(forWritingWithMutableData: data)
-        archiver.encodeObject(lists, forKey: "Checklists")
+        let archiver = NSKeyedArchiver(forWritingWith: data)
+        archiver.encode(lists, forKey: "Checklists")
         archiver.finishEncoding()
-        data.writeToFile(dataFilePath(), atomically: true)
+        data.write(toFile: dataFilePath(), atomically: true)
     }
     
     func sortChecklists() {
-        lists.sortInPlace({ checklist1, checklist2 in return checklist1.name.localizedStandardCompare(checklist2.name) == .OrderedAscending})
+        lists.sort(by: { checklist1, checklist2 in return checklist1.name.localizedStandardCompare(checklist2.name) == .orderedAscending})
     }
     
     class func nextChecklistItemId() -> Int {
-        let userDefaults = NSUserDefaults.standardUserDefaults()
-        let itemID = userDefaults.integerForKey("ChecklistItemID")
-        userDefaults.setInteger(itemID + 1, forKey: "ChecklistItemID")
+        let userDefaults = UserDefaults.standard
+        let itemID = userDefaults.integer(forKey: "ChecklistItemID")
+        userDefaults.set(itemID + 1, forKey: "ChecklistItemID")
         userDefaults.synchronize()
         return itemID
     }
@@ -67,24 +67,24 @@ class DataModel {
     // MARK: - Utils
     
     func documentsDirectory() -> String {
-        let paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
+        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
         return paths[0]
     }
     
     func dataFilePath() -> String {
-        return (documentsDirectory() as NSString).stringByAppendingPathComponent("Checklists.plist")
+        return (documentsDirectory() as NSString).appendingPathComponent("Checklists.plist")
     }
     
     // MARK: - Handle User defaults
     
     func handleFirstTime() {
-        let userDefaults = NSUserDefaults.standardUserDefaults()
-        let firstTime = userDefaults.boolForKey("FirstTime")
+        let userDefaults = UserDefaults.standard
+        let firstTime = userDefaults.bool(forKey: "FirstTime")
         if firstTime {
             let firstTimeChecklist = Checklist(name: "Default Checklist")
             lists.append(firstTimeChecklist)
             indexOfSelectedChecklist = 0
-            userDefaults.setBool(false, forKey: "FirstTime")
+            userDefaults.set(false, forKey: "FirstTime")
             userDefaults.synchronize()
             
         }
@@ -93,7 +93,7 @@ class DataModel {
     func registerDefaults() {
         let dict = [ "ChecklistIndex" : -1,
                      "FirstTime" : true,
-                     "ChecklistItemID" : 0 ]
-        NSUserDefaults.standardUserDefaults().registerDefaults(dict)
+                     "ChecklistItemID" : 0 ] as [String : Any]
+        UserDefaults.standard.register(defaults: dict)
     }
 }

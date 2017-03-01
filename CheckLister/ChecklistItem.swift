@@ -11,24 +11,24 @@ import UIKit
 
 class ChecklistItem: NSObject, NSCoding {
     
-    private let ITEM_ID_KEY = "itemId"
-    private let TEXT_KEY = "text"
-    private let CHECKED_KEY = "checked"
-    private let DUE_DATE_KEY = "dueDate"
-    private let SHOULD_REMIND_KEY = "shouldRemind"
+    fileprivate let ITEM_ID_KEY = "itemId"
+    fileprivate let TEXT_KEY = "text"
+    fileprivate let CHECKED_KEY = "checked"
+    fileprivate let DUE_DATE_KEY = "dueDate"
+    fileprivate let SHOULD_REMIND_KEY = "shouldRemind"
     
     var itemID: Int
     var text = ""
     var checked = false
-    var dueDate = NSDate()
+    var dueDate = Date()
     var shouldRemind = false
     
     required init?(coder aDecoder: NSCoder) {
-        itemID = aDecoder.decodeIntegerForKey(ITEM_ID_KEY)
-        text = aDecoder.decodeObjectForKey(TEXT_KEY) as! String
-        checked = aDecoder.decodeBoolForKey(CHECKED_KEY)
-        dueDate = aDecoder.decodeObjectForKey(DUE_DATE_KEY) as! NSDate
-        shouldRemind = aDecoder.decodeBoolForKey(SHOULD_REMIND_KEY)
+        itemID = aDecoder.decodeInteger(forKey: ITEM_ID_KEY)
+        text = aDecoder.decodeObject(forKey: TEXT_KEY) as! String
+        checked = aDecoder.decodeBool(forKey: CHECKED_KEY)
+        dueDate = aDecoder.decodeObject(forKey: DUE_DATE_KEY) as! Date
+        shouldRemind = aDecoder.decodeBool(forKey: SHOULD_REMIND_KEY)
         
         super.init()
     }
@@ -44,26 +44,26 @@ class ChecklistItem: NSObject, NSCoding {
     
     func scheduleNotification() {
         if let notification = notificationForThisItem() {
-            UIApplication.sharedApplication().cancelLocalNotification(notification)
+            UIApplication.shared.cancelLocalNotification(notification)
         }
         
-        if shouldRemind && dueDate.compare(NSDate()) != .OrderedAscending {
+        if shouldRemind && dueDate.compare(Date()) != .orderedAscending {
             let localNotification = UILocalNotification()
             localNotification.fireDate = dueDate
-            localNotification.timeZone = NSTimeZone.defaultTimeZone()
+            localNotification.timeZone = TimeZone.current
             localNotification.alertBody = text
             localNotification.soundName = UILocalNotificationDefaultSoundName
             localNotification.userInfo = ["ItemID" : itemID]
             
-            UIApplication.sharedApplication().scheduleLocalNotification(localNotification)
+            UIApplication.shared.scheduleLocalNotification(localNotification)
         }
     }
     
     func notificationForThisItem() -> UILocalNotification? {
-        let allNotifications = UIApplication.sharedApplication().scheduledLocalNotifications!
+        let allNotifications = UIApplication.shared.scheduledLocalNotifications!
         
         for notification in allNotifications {
-            if let number = notification.userInfo?["ItemID"] as? Int where number == itemID {
+            if let number = notification.userInfo?["ItemID"] as? Int, number == itemID {
                 return notification
             }
         }
@@ -71,17 +71,17 @@ class ChecklistItem: NSObject, NSCoding {
     }
     
     
-    func encodeWithCoder(aCoder: NSCoder) {
-        aCoder.encodeInteger(itemID, forKey: ITEM_ID_KEY)
-        aCoder.encodeObject(text, forKey: TEXT_KEY)
-        aCoder.encodeBool(checked, forKey: CHECKED_KEY)
-        aCoder.encodeObject(dueDate, forKey: DUE_DATE_KEY)
-        aCoder.encodeBool(shouldRemind, forKey: SHOULD_REMIND_KEY)
+    func encode(with aCoder: NSCoder) {
+        aCoder.encode(itemID, forKey: ITEM_ID_KEY)
+        aCoder.encode(text, forKey: TEXT_KEY)
+        aCoder.encode(checked, forKey: CHECKED_KEY)
+        aCoder.encode(dueDate, forKey: DUE_DATE_KEY)
+        aCoder.encode(shouldRemind, forKey: SHOULD_REMIND_KEY)
     }
     
     deinit {
         if let notification = notificationForThisItem() {
-            UIApplication.sharedApplication().cancelLocalNotification(notification)
+            UIApplication.shared.cancelLocalNotification(notification)
         }
     }
     

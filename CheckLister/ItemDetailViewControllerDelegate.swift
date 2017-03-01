@@ -8,10 +8,10 @@
 
 protocol ItemDetailViewControllerDelegate: class {
     
-    func itemDetailViewController(controller: ItemDetailViewController, didFinishAddingItem item: ChecklistItem)
+    func itemDetailViewController(_ controller: ItemDetailViewController, didFinishAddingItem item: ChecklistItem)
     
-    func itemDetailViewController(controller: ItemDetailViewController, didFinishEditingItem item: ChecklistItem)
+    func itemDetailViewController(_ controller: ItemDetailViewController, didFinishEditingItem item: ChecklistItem)
     
-    func itemDetailViewControllerDidCancel(controller: ItemDetailViewController)
+    func itemDetailViewControllerDidCancel(_ controller: ItemDetailViewController)
     
 }

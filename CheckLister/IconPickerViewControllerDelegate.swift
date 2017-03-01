@@ -9,5 +9,5 @@
 import Foundation
 
 protocol IconPickerViewControllerDelegate: class {
-    func iconPicker(picker: IconPickerViewController, didPickIcon iconName: String)
+    func iconPicker(_ picker: IconPickerViewController, didPickIcon iconName: String)
 }

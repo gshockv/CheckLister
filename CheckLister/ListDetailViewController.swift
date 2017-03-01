@@ -24,14 +24,14 @@ class ListDetailViewController: UITableViewController, UITextFieldDelegate, Icon
         if let checklist = checklistToEdit {
             title = "Edit Checklist"
             textField.text = checklist.name
-            doneBarButton.enabled = true
+            doneBarButton.isEnabled = true
             iconName = checklist.iconName
         }
         
         iconImageView.image = UIImage(named: iconName)
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         textField.becomeFirstResponder()
     }
@@ -53,15 +53,15 @@ class ListDetailViewController: UITableViewController, UITextFieldDelegate, Icon
         }
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "PickIcon" {
-            let controller = segue.destinationViewController as! IconPickerViewController
+            let controller = segue.destination as! IconPickerViewController
             controller.delegate = self
         }
     }
     
     // MARK: - Table view delegate methods
-    override func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
+    override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         if indexPath.section == 1 {
             return indexPath
         } else {
@@ -70,17 +70,17 @@ class ListDetailViewController: UITableViewController, UITextFieldDelegate, Icon
     }
     
     // MARK: - Text field delegate methods
-    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-        let oldText: NSString = textField.text!
-        let newText: NSString = oldText.stringByReplacingCharactersInRange(range, withString: string)
-        doneBarButton.enabled = newText.length > 0
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let oldText: NSString = textField.text! as NSString
+        let newText: NSString = oldText.replacingCharacters(in: range, with: string) as NSString
+        doneBarButton.isEnabled = newText.length > 0
         return true
     }
     
-    func iconPicker(picker: IconPickerViewController, didPickIcon iconName: String) {
+    func iconPicker(_ picker: IconPickerViewController, didPickIcon iconName: String) {
         self.iconName = iconName
         iconImageView.image = UIImage(named: iconName)
-        navigationController?.popViewControllerAnimated(true)
+        navigationController?.popViewController(animated: true)
     }
     
 }

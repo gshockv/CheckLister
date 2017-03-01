@@ -8,11 +8,11 @@
 
 protocol ListDetailViewControllerDelegate: class {
     
-    func listDetailViewControllerDidCancel(controller: ListDetailViewController)
+    func listDetailViewControllerDidCancel(_ controller: ListDetailViewController)
     
-    func listDetailViewController(controller: ListDetailViewController, didFinishAddingChecklist checklist: Checklist)
+    func listDetailViewController(_ controller: ListDetailViewController, didFinishAddingChecklist checklist: Checklist)
     
-    func listDetailViewController(controller: ListDetailViewController, didFinishEditingChecklist checklist: Checklist)
+    func listDetailViewController(_ controller: ListDetailViewController, didFinishEditingChecklist checklist: Checklist)
     
 }
 
